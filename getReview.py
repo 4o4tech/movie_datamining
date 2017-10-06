@@ -4,6 +4,7 @@ import re
 import requests
 import urllib
 import os
+import time
 from bs4 import BeautifulSoup
 from urllib2 import HTTPError
 
@@ -35,7 +36,7 @@ def getData(htmltext):
     #find <b>Author:</b>
     author_string = soup.find_all(string=re.compile("Author:"))
 
-    author_name = []
+    author_name_list = []
     comments = []
 
     finalData ={}
@@ -50,31 +51,27 @@ def getData(htmltext):
 
     	#merge split comment together
     	strComment = ''
-    	for i in comment:
-    		strComment += i
 
+        
+
+    	# for i in comment:
+    	# 	strComment += i  
+        
     	# add to comments list
-    	comments += strComment
+    	comments.append(comment)
  
     	# author name, a tag content in the div
     	aList = author_infor.find_all('a')
 
-    	author_name += aList[1].contents
+        name = aList[1].contents
+    	author_name_list.append(name)
+
+    for i in range(0,len(comments)):
 
 
-    # for comment in comments:
+        print author_name_list[i]
+        print  comments[i]
 
-
-    # for k  in author_name:
-    # 	for v in comment:
-
-    # 		finalData[k] = v
-    # return finalData
-
-
-    	# author_comment[author_name] = comment
-
-    # return finalData
 
     # for i in pTag:
     #    commet = i.previous_sibling
@@ -88,7 +85,7 @@ def main():
 	#调试 ……  10/6 8:58
 	#  imdb url  http://www.imdb.com/title/tt0137523/reviews?count=10&start=0
 	#  movie id: tt0137523  
-	#  comment number: count 
+	#  comment number: count
     url = 'http://www.imdb.com/title/tt0137523/reviews?count=10&start=0'
     htmltext = getHtml(url)
 
@@ -101,11 +98,9 @@ def main():
     read.close()
     '''
 
-    getData(htmltext)
-    # infor = getHref(htmltext)
+    # getData(htmltext)
+    infor = getData(htmltext)
 
-    # for k, v in infor.iteritems():
-    # 	print k + "\n" +v
 
 
 if __name__ =='__main__':
