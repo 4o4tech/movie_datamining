@@ -1,12 +1,16 @@
-#/usr/bin/python
+# /usr/bin/python
 # -*- coding:utf-8 -*-
 import re
 import requests
 import urllib
 import os
 import time
+import csv
+
 from bs4 import BeautifulSoup
 from urllib2 import HTTPError
+
+
 
 
 
@@ -43,34 +47,46 @@ def getData(htmltext):
 
     count = 0 
     for x in author_string:
-    	#author information div
-    	author_infor = x.find_parent("div")
-    	
-    	# tag p is comment
-    	comment = author_infor.find_next("p")
+        #author information div
+        author_infor = x.find_parent("div")
 
-    	#merge split comment together
-    	strComment = ''
+        # tag p is comment
+        comment = author_infor.find_next("p")
 
-        
+        #merge split comment together
+        strComment = ''
 
-    	# for i in comment:
-    	# 	strComment += i  
-        
-    	# add to comments list
-    	comments.append(comment)
- 
-    	# author name, a tag content in the div
-    	aList = author_infor.find_all('a')
+
+
+        # for i in comment:
+        # 	strComment += i  
+
+        # add to comments list
+        comments.append(comment)
+
+        # author name, a tag content in the div
+        aList = author_infor.find_all('a')
 
         name = aList[1].contents
-    	author_name_list.append(name)
 
-    for i in range(0,len(comments)):
+        author_name_list.append(name)
+
+    
 
 
-        print author_name_list[i]
-        print  comments[i]
+    
+
+
+    with open('data.txt','a') as myfile:
+        for i in range(0,len(comments)):
+
+            myfile.write(''.join(author_name_list[i]))
+
+            myfile.write(''.join(comments[i]))
+        
+        # print author_name_list[i]
+
+        # print  comments[i]
 
 
     # for i in pTag:
@@ -79,6 +95,9 @@ def getData(htmltext):
     #    print i
 
 
+def getUrl():
+    pass
+
 
 def main():
 
@@ -86,24 +105,43 @@ def main():
 	#  imdb url  http://www.imdb.com/title/tt0137523/reviews?count=10&start=0
 	#  movie id: tt0137523  
 	#  comment number: count
-    url = 'http://www.imdb.com/title/tt0137523/reviews?count=10&start=0'
-    htmltext = getHtml(url)
+
+    urlList={'tt0071562':'50'}
+
+    # urlList={'tt0111161':'4796','tt0068646':'2475','tt0071562':'699'}
+
+    for x in urlList:
+        
+        url = 'http://www.imdb.com/title/'+ x +'/reviews?count='+urlList[x] +'&start=0'
+
+        print url
+        print " <-_-> "*20
+
+        htmltext = getHtml(url)
+
+        infor = getData(htmltext)
+
+
+
+    # url = 'http://www.imdb.com/title/tt0137523/reviews?count=10&start=0'
+    # htmltext = getHtml(url)
 
     # read local file html file
-    '''
-    module_path = os.path.dirname(__file__)    
-    filename = module_path + '/test.html'
-    read = open(filename,'r')
-    htmltext = read.read()
-    read.close()
-    '''
+    
+    # # module_path    
+    # filename = os.path.dirname(os.path.abspath(__file__)) + '/test.html'
+    # read = open(filename,'r')
+    # htmltext = read.read()
+    # read.close()
+    
 
     # getData(htmltext)
-    infor = getData(htmltext)
-
+    
+    #infor = getData(htmltext)
 
 
 if __name__ =='__main__':
+
 	main()
 
 
